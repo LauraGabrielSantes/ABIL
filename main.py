@@ -12,7 +12,7 @@ class main():
  emisorBusqueda = int(input("Indique el id del nodo iniciador de la búsqueda: "))
  recursoBuscado = int(input("¿Qué recurso desea buscar? "))
  ttl = int(input("Indique el TTL de búsqueda: "))  
- 
+ ABIL.contadorMensajes = 0
  inicio = time.time()
  experiment = Simulation(sys.argv[1], 60)  #pendiente validar tiempo de la simulación
  m = ABIL()
@@ -26,6 +26,6 @@ class main():
  experiment.init(seed)
  experiment.run()
  fin = time.time()
-
+ print("\nMensajes enviados:", ABIL.contadorMensajes)
 
 

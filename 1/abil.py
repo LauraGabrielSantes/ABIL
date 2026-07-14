@@ -1,12 +1,11 @@
-#Implementa la simulacion del Algoritmo de inundación limitada usando como base el algoritmo de PI Segall
+#Implementa la simulacion del Algoritmo de búsqueda por inundación limitada usando como base el algoritmo de PI Segall
 import random
 from event import Event
 from model import Model
 
-
 class ABIL(Model):
    contadorMensajes=0
-   
+   encontrado = False
    def init(self):
      print ("\nInicio funciones", self.id)
      print ("Mis vecinos son:", self.neighbors)
@@ -29,7 +28,6 @@ class ABIL(Model):
     else:
       nombre = evento
 
-
     if nombre == "INICIA":
      self.visitado=True
      emisorBusqueda = self.id
@@ -43,7 +41,7 @@ class ABIL(Model):
        ABIL.contadorMensajes += 1
        self.transmit(newevent)
     elif nombre == "M":
-      print ("[", self.id, "]: recibí M de ", origen," con TTL = ", TTL_recibido," en t=",self.clock," ")
+      print ("[", self.id, "]: Recibí M de ", origen," con TTL = ", TTL_recibido," en t=",self.clock," ")
       if not self.visitado:
         self.visitado=True
         self.TTL = TTL_recibido
@@ -68,28 +66,26 @@ class ABIL(Model):
             self.TTL -= 1
             mensaje = ("M",[recursoBuscado,emisorBusqueda,self.TTL])
             for vecino in self.neighbors:
-              if vecino != origen: #evaluar si se descarta el envío al nodo padre, o se permite que se le envíe 
+              if vecino != origen:  
                 newevent = Event(mensaje, self.clock + 1.0, vecino, self.id)
                 ABIL.contadorMensajes += 1
                 self.transmit(newevent)
     elif nombre == "ENCONTRADO":
+      ABIL.encontrado = True
       self.nodos_con_recurso.append(origen)
-      print ("[", self.id,"]: El nodo ", origen," tiene el recurso  t = ",self.clock,"\nactualizo lista de nodos con recurso: ",self.nodos_con_recurso,"\n")
-
-   
+      print ("[", self.id,"]: ¡El nodo ", origen," tiene el recurso!  t = ",self.clock,"\n>>> ACTUALIZO LISTA DE NODOS CON RECURSO: ",self.nodos_con_recurso,"\n")
+  
    def llenaRecurso(self):
      listaRecursos =[]
-     tam = random.randint(2,10) #llegaba solo a 6, pero no a 10 productos por nodo
-     for _ in range (tam): #con esto garantizamos que se llenen los productos entre 2 y 10, ya que si nos salia un tam de 2 solo nos daria 1 producto realmente
+     tam = random.randint(2,10) 
+     for _ in range (tam): 
        contenido = random.randint(1,100)
-       if contenido not in listaRecursos: #esto nos evitara obtener contenido duplicado en los productos [4,4,4,5]
+       if contenido not in listaRecursos: 
         listaRecursos.append(contenido)
      return listaRecursos
-
    
    def localizaRecurso(self, listaRecursos, recursoBuscado):
      for i in listaRecursos:
        if i == recursoBuscado:
          return True
      return False
-     

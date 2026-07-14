@@ -14,7 +14,7 @@ class main():
  ttl = int(input("Indique el TTL de búsqueda: "))  
  ABIL.contadorMensajes = 0
  inicio = time.time()
- experiment = Simulation(sys.argv[1], 60)  #pendiente validar tiempo de la simulación
+ experiment = Simulation(sys.argv[1], 60)  
  m = ABIL()
  for i in range(1,len(experiment.graph)+1):
   experiment.setModel(m, i)
@@ -26,6 +26,5 @@ class main():
  experiment.init(seed)
  experiment.run()
  fin = time.time()
+ if not ABIL.encontrado: print ("\n EL RECURSO ",recursoBuscado," NO FUE ENCONTRADO \n")
  print("\nMensajes enviados:", ABIL.contadorMensajes)
-
-

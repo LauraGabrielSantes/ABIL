@@ -11,7 +11,6 @@ class ABIL(Model):
      print ("\nInicio funciones", self.id)
      print ("Mis vecinos son:", self.neighbors)
      self.visitado=False
-     self.padre=self.id
      self.TTL = 0
      self.mis_recursos = self.llenaRecurso()
      print ("[",self.id,"]: Mis recursos son: ", self.mis_recursos,"\n")
@@ -44,12 +43,11 @@ class ABIL(Model):
        ABIL.contadorMensajes += 1
        self.transmit(newevent)
     elif nombre == "M":
-      #ABIL.contadorMensajes+=1
-      print ("[", self.id, "]: recibí M de", origen," en t=",self.clock," \n")
+      print ("[", self.id, "]: recibí M de ", origen," con TTL = ", TTL_recibido," en t=",self.clock," ")
       if not self.visitado:
-        self.padre=origen
         self.visitado=True
         self.TTL = TTL_recibido
+        print ("[", self.id, "]: actualizo TTL a ", self.TTL," \n")
         if self.localizaRecurso(self.mis_recursos, recursoBuscado):
           newevent = Event("ENCONTRADO", self.clock + 1.0, emisorBusqueda, self.id)
           ABIL.contadorMensajes += 1
@@ -58,14 +56,14 @@ class ABIL(Model):
          self.TTL -= 1
          mensaje = ("M",[recursoBuscado,emisorBusqueda,self.TTL])
          for vecino in self.neighbors:
-          if vecino != self.padre:  
+          if vecino != origen:  
             newevent = Event(mensaje, self.clock + 1.0, vecino, self.id)
             ABIL.contadorMensajes += 1
             self.transmit(newevent)
       else:
         if self.TTL < TTL_recibido:
           self.TTL = TTL_recibido
-          self.padre = origen
+          print ("[", self.id, "]: actualizo TTL a ", self.TTL," \n")
           if self.TTL > 0:
             self.TTL -= 1
             mensaje = ("M",[recursoBuscado,emisorBusqueda,self.TTL])
